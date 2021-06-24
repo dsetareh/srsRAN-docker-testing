@@ -184,13 +184,13 @@ def start_and_stop_containers(startNum, endNum):
             range(startNum, endNum + 1, CONTAINER_ACTION_STEP)):
         print(f"{bcolors.HEADER} Fuzzing Group " + str(groupIdx + 1) +
               f"{bcolors.ENDC}")
-        print("!! Starting Group" + str(groupIdx) + " [" +
+        print("!! Starting Group " + str(groupIdx + 1) + " [" +
               str(groupStartIdx) + ":" +
               str(min((groupStartIdx + 1 + CONTAINER_ACTION_STEP), endNum)) +
               "] !!")
         start_test_containers(
             groupStartIdx, min(endNum, groupStartIdx + CONTAINER_ACTION_STEP))
-        print("!! Stopping container group" + str(groupIdx) + " [" +
+        print("!! Stopping container group" + str(groupIdx + 1) + " [" +
               str(groupStartIdx) + ":" +
               str(min((groupStartIdx + 1 + CONTAINER_ACTION_STEP), endNum)) +
               "] !!")
@@ -244,12 +244,12 @@ def stop_container(contNum, ignoreCompletion=False):
     """
     numSecWaited = 0
     while not (check_test_completion(contNum) or ignoreCompletion):
-        numSecWaited += 1
+        numSecWaited += 5
         print(f"{bcolors.WARNING}Waiting " + str(numSecWaited) +
               "s for test completion on container " + str(contNum) +
               F"{bcolors.ENDC}",
               end='\r')
-        time.sleep(1)
+        time.sleep(5)
     print()
     print("closing container" + str(contNum))
     subprocess.call([
