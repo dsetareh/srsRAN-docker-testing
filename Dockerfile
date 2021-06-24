@@ -25,7 +25,7 @@ RUN rm -rf /var/lib/apt/lists/*
 WORKDIR /srsran
 
 # Pinned git commit used for this example
-ARG COMMIT=91557b14c25a3d6ae819175149237c8c00061c62
+ARG COMMIT=159a7465d4352c0d8c0448c7c2656c88d54c5e34
 
 # Download and build
 RUN git clone https://github.com/dsetareh/srsRAN.git ./
