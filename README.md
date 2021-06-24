@@ -1,6 +1,6 @@
 # srsRAN-docker-testing
 
-> This based on the repo created by [pgorczak](https://github.com/pgorczak),
+[Current Tagged srsRAN Commit (91557b14c25a3d6ae819175149237c8c00061c62)](https://github.com/dsetareh/srsRAN/commit/91557b14c25a3d6ae819175149237c8c00061c62)
 
 ## commands
 
