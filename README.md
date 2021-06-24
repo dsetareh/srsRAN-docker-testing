@@ -1,7 +1,10 @@
 # srsRAN-docker-testing
 
-[Current Tagged srsRAN Commit (91557b14c25a3d6ae819175149237c8c00061c62)](https://github.com/dsetareh/srsRAN/tree/91557b14c25a3d6ae819175149237c8c00061c62)
+Script for executing tests upon a srsRAN environment in docker.
 
+[Current srsRAN Build Commit](https://github.com/dsetareh/srsRAN/tree/91557b14c25a3d6ae819175149237c8c00061c62)
+
+[Old Repository](https://github.com/dsetareh/srsRAN-docker-emulated)
 ## commands
 
 ### start and stop containers
