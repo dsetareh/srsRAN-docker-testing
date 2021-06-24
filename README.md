@@ -9,7 +9,7 @@ Executes simultaneous fuzzing tests on srsRAN within docker containers
 git clone https://github.com/dsetareh/srsRAN-docker-testing ./
 
 # build and tag container
-docker build -t srsranFuzzTesting:latest ./                                           
+docker build -t srsran-fuzz-testing:latest ./
 
 # generate [1:1000] docker-compose files in ./
 python3 ./fuzztest_helper.py generate 1 1000 ./docker-compose-template.yml ./ 

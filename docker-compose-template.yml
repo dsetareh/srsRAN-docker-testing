@@ -3,7 +3,7 @@ version: '3.8'
 services:
   srsepc:
     container_name: virtual-srsepc
-    image: srsranFuzzTesting:latest
+    image: srsran-fuzz-testing:latest
     command: EPC_CMD_PLACEHOLDER
     networks:
       corenet:
@@ -16,7 +16,7 @@ services:
 
   srsenb:
     container_name: virtual-srsenb
-    image: srsranFuzzTesting:latest
+    image: srsran-fuzz-testing:latest
     command: ENB_CMD_PLACEHOLDER
     networks:
       corenet:
@@ -28,7 +28,7 @@ services:
       - VOLUME_PLACEHOLDER
       
   srsue:
-    image: srsranFuzzTesting:latest
+    image: srsran-fuzz-testing:latest
     command: UE_CMD_PLACEHOLDER
     ipc: service:srsenb
     cap_add:
