@@ -12,10 +12,10 @@ git clone https://github.com/dsetareh/srsRAN-docker-testing ./
 docker build -t srsranFuzzTesting:latest ./                                           
 
 # generate [1:1000] docker-compose files in ./
-python3 ./fuzztest_helper.py generate 1 1000 ../docker-compose-template.yml ./ 
+python3 ./fuzztest_helper.py generate 1 1000 ./docker-compose-template.yml ./ 
 
 # start testing containers [1:1000]
-python3 ./fuzztest_helper.py generate 1 1000 ../docker-compose-template.yml ./ 
+python3 ./fuzztest_helper.py generate 1 1000 ./docker-compose-template.yml ./ 
 
 ```
 
