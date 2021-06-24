@@ -5,7 +5,7 @@ Executes simultaneous fuzzing tests on srsRAN within docker containers
 ## quick start
 
 ```
-# clone repo
+# clone repo to current dir
 git clone https://github.com/dsetareh/srsRAN-docker-testing ./
 
 # build and tag container
