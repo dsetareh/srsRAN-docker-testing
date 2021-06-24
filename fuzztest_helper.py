@@ -8,9 +8,10 @@ from pathlib import Path
 #
 # run without arguments to see options
 
-CONTAINER_ACTION_STEP = 4  # ! max number of containers started at once
+CONTAINER_ACTION_STEP = 3  # ! max number of containers started at once
 
 COMPOSE_DIRECTORY = "compose/"
+
 
 # colored text stuff
 class bcolors:
@@ -184,16 +185,20 @@ def start_and_stop_containers(startNum, endNum):
             range(startNum, endNum + 1, CONTAINER_ACTION_STEP)):
         print(f"{bcolors.HEADER} Fuzzing Group " + str(groupIdx + 1) +
               f"{bcolors.ENDC}")
+
         print("!! Starting Group " + str(groupIdx + 1) + " [" +
               str(groupStartIdx) + ":" +
-              str(min((groupStartIdx + 1 + CONTAINER_ACTION_STEP), endNum)) +
+              str(min((groupStartIdx + CONTAINER_ACTION_STEP), endNum)) +
               "] !!")
+
         start_test_containers(
             groupStartIdx, min(endNum, groupStartIdx + CONTAINER_ACTION_STEP))
+
         print("!! Stopping container group" + str(groupIdx + 1) + " [" +
               str(groupStartIdx) + ":" +
-              str(min((groupStartIdx + 1 + CONTAINER_ACTION_STEP), endNum)) +
+              str(min((groupStartIdx + CONTAINER_ACTION_STEP), endNum)) +
               "] !!")
+
         stop_test_containers(
             groupStartIdx, min(endNum, groupStartIdx + CONTAINER_ACTION_STEP))
         print(f"{bcolors.HEADER} Fuzz Group " + str(groupIdx) +
@@ -202,7 +207,7 @@ def start_and_stop_containers(startNum, endNum):
 
 
 def start_test_containers(startNum, endNum):
-    """starts containers in range specified, in groups of CONTAINER_ACTION_STEP (currently 5)
+    """starts containers in range specified, in groups of CONTAINER_ACTION_STEP
 
     Args:
         startNum (int): start index
@@ -212,10 +217,8 @@ def start_test_containers(startNum, endNum):
         [subprocess.Popen]: array of handles for started processes
     """
     popenObjs = []
-    for groupIdx in range(startNum, endNum + 1, CONTAINER_ACTION_STEP):
-        for currIterNum in range(groupIdx, groupIdx + CONTAINER_ACTION_STEP):
-            if currIterNum <= endNum:
-                popenObjs.append(start_container(currIterNum))
+    for currNum in range(startNum, endNum + 1):
+        popenObjs.append(start_container(currNum))
 
     return popenObjs
 
@@ -228,10 +231,8 @@ def stop_test_containers(startNum, endNum, ignoreCompletion=False):
         endNum (int): end index
         ignoreCompletion (boolean, optional, default=False): if True, stops containers without checking whether they've completed their task
     """
-    for groupIdx in range(startNum, endNum + 1, CONTAINER_ACTION_STEP):
-        for currIterNum in range(groupIdx, groupIdx + CONTAINER_ACTION_STEP):
-            if currIterNum <= endNum:
-                stop_container(currIterNum, ignoreCompletion)
+    for currNum in range(startNum, endNum + 1):
+        stop_container(currNum, ignoreCompletion)
 
 
 def stop_container(contNum, ignoreCompletion=False):
@@ -243,6 +244,7 @@ def stop_container(contNum, ignoreCompletion=False):
 
     """
     numSecWaited = 0
+    print("Attempting to stop containers")
     while not (check_test_completion(contNum) or ignoreCompletion):
         numSecWaited += 5
         print(f"{bcolors.WARNING}Waiting " + str(numSecWaited) +
@@ -293,7 +295,7 @@ def save_logs(contNum):
         contNum (int): container #
     """
     print("saving logs for container " + str(contNum))
-    with open("tests/" + str(contNum) + ".txt", "w") as text_file:
+    with open("tests/" + str(contNum) + ".txt", "w") as text_file:  # ! fix dir
         text_file.write(get_logs(contNum))
 
 
@@ -376,8 +378,8 @@ if __name__ == "__main__":
         quit(0)
 
     if sys.argv[1] == "stopforce":
-        print("FORCE STOPPING tests [" + sys.argv[2] + ":" + str(int(sys.argv[3])) +
-              "].")
+        print("FORCE STOPPING tests [" + sys.argv[2] + ":" +
+              str(int(sys.argv[3])) + "].")
         stop_test_containers(int(sys.argv[2]), int(sys.argv[3]), True)
         print(f"{bcolors.OKGREEN}Containers [" + sys.argv[2] + ":" +
               str(int(sys.argv[3])) + f"] FORCE Stopped.{bcolors.ENDC}")
