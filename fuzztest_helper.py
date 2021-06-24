@@ -10,7 +10,11 @@ from pathlib import Path
 
 CONTAINER_ACTION_STEP = 3  # ! max number of containers started at once
 
-COMPOSE_DIRECTORY = "compose/"
+COMPOSE_DIRECTORY = "./"
+
+LOG_DIRECTORY = "./tests/"
+
+PCAP_DIRECTORY = "./pcaps/"
 
 
 # colored text stuff
@@ -77,7 +81,7 @@ def generate_compose(templateFilename, outputDir, testNumber):
         'command'] = 'srsenb /etc/srsran/enb.conf.fauxrf --enb.mme_addr=' + epc_ip + ' --enb.gtp_bind_addr=' + enb_ip + ' --enb.s1c_bind_addr=' + enb_ip
 
     docker_config['services']['srsenb']['volumes'][
-        0] = './pcaps/' + test_number + ':/pcaps/'
+        0] = PCAP_DIRECTORY + test_number + ':/pcaps/'
 
     docker_config['services']['srsenb']['networks']['corenet'][
         'ipv4_address'] = enb_ip
@@ -217,7 +221,7 @@ def start_test_containers(startNum, endNum):
         [subprocess.Popen]: array of handles for started processes
     """
     popenObjs = []
-    for currNum in range(startNum, endNum + 1):
+    for currNum in range(startNum, endNum):
         popenObjs.append(start_container(currNum))
 
     return popenObjs
@@ -231,7 +235,7 @@ def stop_test_containers(startNum, endNum, ignoreCompletion=False):
         endNum (int): end index
         ignoreCompletion (boolean, optional, default=False): if True, stops containers without checking whether they've completed their task
     """
-    for currNum in range(startNum, endNum + 1):
+    for currNum in range(startNum, endNum):
         stop_container(currNum, ignoreCompletion)
 
 
@@ -253,16 +257,13 @@ def stop_container(contNum, ignoreCompletion=False):
               end='\r')
         time.sleep(5)
     print()
+    save_logs(contNum)
     print("closing container" + str(contNum))
     subprocess.call([
         'docker-compose', '-p', 'srsRAN_' + str(contNum), '-f',
         f'{COMPOSE_DIRECTORY}docker-compose_' + str(contNum) + '.yml', 'down',
         '-v'
-    ],
-                    stdin=None,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    close_fds=True)
+    ])
     print("requested to close container " + str(contNum))
 
 
@@ -295,7 +296,9 @@ def save_logs(contNum):
         contNum (int): container #
     """
     print("saving logs for container " + str(contNum))
-    with open("tests/" + str(contNum) + ".txt", "w") as text_file:  # ! fix dir
+    output_folder = Path(LOG_DIRECTORY)
+    output_filename = output_folder / ("testLog_" + str(contNum) + ".txt")
+    with open(output_filename, "w") as text_file:  # ! fix dir
         text_file.write(get_logs(contNum))
 
 
@@ -342,14 +345,15 @@ def range_check_helper_functions(startNum, endNum):
         quit(1)
 
 
-if __name__ == "__main__":
-
+def main():
+    if len(sys.argv) <= 2 and sys.argv[1] == "debugging":
+        return
     if len(sys.argv) < 4:
         print_guide()
     if len(sys.argv) == 5 and (sys.argv[1] == "start" or sys.argv[1] == "stop"
                                or sys.argv[1] == "fuzz"
                                or sys.argv[1] == "stopforce"):
-        print(f"{bcolors.FAIL}COMPOSE DIRECTORY SET: " + sys.argv[4] +
+        print(f"{bcolors.HEADER}COMPOSE DIRECTORY SET: " + sys.argv[4] +
               f"{bcolors.ENDC}")
         COMPOSE_DIRECTORY = sys.argv[4]
 
@@ -394,3 +398,7 @@ if __name__ == "__main__":
         quit(0)
 
     print_guide()
+
+
+if __name__ == "__main__":
+    main()
