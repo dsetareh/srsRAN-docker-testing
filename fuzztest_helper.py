@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import yaml, sys, subprocess, time
 from pathlib import Path
 
